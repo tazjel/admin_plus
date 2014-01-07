@@ -17,11 +17,10 @@ global_env = copy.copy(globals())
 
 
 def get_databases():
-    ''' Optenemos todas las variables globales
-        que sean instancia de DAL
+    ''' global variables that are instance of DAL
 
-        --- Esta funcion retorna un diccinario con las
-        --- conecciones a bases de datos'''
+        --- This function returns a dictionary
+            with the connections to databases'''
 
     dbs = {}
     for (key, value) in global_env.items():
@@ -32,44 +31,33 @@ def get_databases():
 
 
 databases = get_databases()
-db = databases.values()[0]  # tomamos solo una base de datos por ahora.
+db = databases.values()[0]  # # Take only one database for now.
 tables = sorted(db.tables)
 settings = Settings()
 
 
-#-------- Configuracion de roles  ---------------
+#-------- Role configuration  ---------------
 
-#Configuraciones por defecto --- settings -> dic()
 settings.superuser_role = "plugin_admin_plus_superuser"
 settings.reader_role    = "plugin_admin_plus_reader",
 settings.editor_role    = "plugin_admin_plus_editor"
 settings.creator_role   = "plugin_admin_plus_creator"
 settings.deleter_role   = "plugin_admin_plus_deleter"
 
-
-#se almacenan las configuraciones en un diccionario llamado roles
 settings.roles = roles = {}
-roles[settings.superuser_role] = T('Los superuser pueden, crear leer actualizar y eliminar registros en todas \
-                                    las tablas incluida la tabla Auth.')
-roles[settings.reader_role] = 'Readers pueden leer registros en todas las tablas.'
-roles[settings.editor_role] = 'Editors pueden editar registros en todas las tablas'
-roles[settings.creator_role] = 'Creators pueden crear registros en todas las tablas'
-roles[settings.deleter_role] = 'deleters pueden eliminar regisros en todas tablas.'
+roles[settings.superuser_role] = 'Super Users can create, read, update and delete records in all tables including Auth tables.'
+roles[settings.reader_role] = 'Readers can read records in all tables.'
+roles[settings.editor_role] = 'Editors can edit records in all tables.'
+roles[settings.creator_role] = 'Creators can create records in all tables.'
+roles[settings.deleter_role] = 'deleters can delete records in all tables.'
 
 
-#------------- configuraciones del plugin ------------
-
-"""se almacenan las configuracines en
-   en una instancia de pluginManager
-   Ej: for role in plugins.admin_plus.roles:
-   """
+#------------- plugin configuration ------------
 
 from gluon.tools import PluginManager
 plugins = PluginManager('admin_plus', **settings)
 
 
-#Configuraciones de redirecciones de auth, luego que se inicia session
-#con un request del plugin
 if request.controller == 'plugin_admin_plus':
     auth.settings.controller = 'plugin_admin_plus'
     auth.settings.login_url = URL(c='plugin_admin_plus', f='user', args='login')
@@ -80,7 +68,7 @@ if request.controller == 'plugin_admin_plus':
     auth.settings.profile_next = URL(c='plugin_admin_plus', f='index')
 
 
-# ---------- configuracion de todas las tablas de la instancia del objeto Auth ------------
+# ---------- Auth Tables ------------
 
 auth_tables = [str(auth.settings.table_user),
                str(auth.settings.table_group),
@@ -96,17 +84,14 @@ def is_auth_table(table_name):
     return str(table_name) in auth_tables
 
 
-#--------- Grupos y permisos necesarios para avilitar el plugin ----------
+#--------- Groups and permissions to enable the plugin ----------
 
 def record_exists(table, field, value):
-    ''' retorna verdadero o falso dependiendo
-        si el registro existe en la base de datos '''
     table = str(table)
     field = str(fiel)
     return db(db[table][field]==value).select().first() is not None
 
 def get_or_create_group(role, description):
-    '''  crea cada grupos con su descripcion respectiva '''
     group = db(auth.settings.table_group.role == role).select().first()
     if not group:
         group_id = auth.add_group(role=role, description=description)
@@ -114,7 +99,6 @@ def get_or_create_group(role, description):
     return group
 
 def get_or_create_permission(group_id, name, table_name):
-    ''' crea permisos para cada grupo '''
     query = auth.settings.table_permission.group_id == group_id
     query &= (auth.settings.table_permission.name == name)
     query &= (auth.settings.table_permission.table_name == table_name)
@@ -125,7 +109,7 @@ def get_or_create_permission(group_id, name, table_name):
     return permission
 
 
-#----------- Funciones que usa el controlador ------------------
+#----------- Functions that uses the controller ------------------
 
 def create_roles():
     for role in plugins.admin_plus.roles:
@@ -142,7 +126,7 @@ def create_roles():
                 elif role == plugins.admin_plus.deleter_role:
                     get_or_create_permission(group.id, 'delete', table)
 
-            # A los super usuarios signa permisos a todas las tablas
+            # super users can access all tables
             if role == plugins.admin_plus.superuser_role:
                     get_or_create_permission(group.id, 'create', table)
                     get_or_create_permission(group.id, 'read', table)
@@ -156,11 +140,9 @@ def validate(table_name, id=None):
     and returns corresponding Table and Row objects.
     """
 
-    # auth_tables requiere un rol de superusuario
     if is_auth_table(table_name) and not auth.has_membership(role=plugins.admin_plus.superuser_role):
         redirect(auth.settings.on_failed_authorization)
 
-    # si la tabla no existe genera un error 404
     table_name in tables or error()
     table = db[table_name]
 
@@ -178,7 +160,7 @@ def error():
     raise HTTP(404)
 
 
-#------------------- configuracion de pagina -------------------------
+#------------------- page -------------------------
 
 def pretty(s):
     s = str(s).replace('_',' ').title()
@@ -207,8 +189,10 @@ def singular(name):
 
 
 def refactorizar_campos(table):
-    """ Combierte todos los campos a un diseño
-        personalizado """
+    """ customize fields
+
+        campo is field
+    """
 
     if table:
         filas = table.fields
@@ -281,7 +265,7 @@ def refactorizar_campos(table):
 
 
 
-#--------------- paginacion --------------------------
+#--------------- pagination --------------------------
 
 def get_pages_list(current_page, number_of_pages):
     """Returns the list of page numbers for pagination
@@ -325,7 +309,7 @@ def get_pages_list(current_page, number_of_pages):
 #------------ -------------- -------------- --------------
 
 def sidebar_tables():
-    '''Menu por defecto'''
+    '''Default Menu'''
     t = []
     for table in tables:
         if auth.has_permission('read', table):

@@ -27,16 +27,15 @@ settings.extra_sidebar = [ #LI(A(I(_class="fa fa-angle-right"), ' google', _href
                            #LI(A(I(_class="fa fa-angle-right"), ' web2py', _href="http://web2py.com")), \
                         ]
 
-optimizar_paginacion = True
+optimize_pagination = True
 settings.items_per_page = 6 # if optimizar_paginacion else 0
 
-#------------------ controladores ----------------------------
-
+#------------------ controller ----------------------------
 
 def install():
-    """ Esta funcion crea los grupos y permisos necesarios """
+    """ This function creates the groups and permissions """
     create_roles()
-    session.flash = T("Bienvenido a Web2py Admin plus")
+    session.flash = T("Welcome to Web2py Admin plus")
     redirect(URL('index'))
 
 
@@ -45,7 +44,7 @@ def index():
     grid_table = 6
     data = {}
     buscar = request.vars.search
-    # Patrones de busqueda
+    # Search Patterns
     tablas = [tab for tab in tables if str(buscar) in tab]
     if buscar != None:
         for table in tablas:
@@ -123,7 +122,7 @@ def list():
     import math
 
     arg = request.args(0) or error()
-    optimizar =  optimizar_paginacion
+    optimizar =  optimize_pagination # optimizar is optimize
 
     def import_csv(table, file):
         table.import_from_csv_file(file)
@@ -133,10 +132,10 @@ def list():
     number_of_items = db(table.id > 0).count()
     fields = [field for field in table.fields if table[field].readable and table[field].type is not 'blob']
 
-    if optimizar_paginacion:
-        """ Si la tabla contiene mas de mil registro
-           No es combeniente usar la paginacion interactiva,
-           ya que afecta el rendimiento
+    if optimize_pagination:
+        """ If the table contains more than one thousand
+            record is not convenient to use the interactive pagination,
+            because it affects the performance
         """
 
         if request.vars.page:
@@ -144,47 +143,34 @@ def list():
         else:
             current_page = 1
 
-        # Sorting
         orderby = table['id']
-        if request.vars.sort:
-            sort_by = request.vars.sort
-            sort_by in table.fields or die()
 
-            # GAE does not allow sorting by text fields
-            if request.env.web2py_runtime_gae and table[sort_by].type is 'text':
-                response.flash = T("GAE does not allow sorting by text fields")
-                request.vars.sort = 'id'
-            else:
-                orderby = table[sort_by]
-        if request.vars.sort_reverse == 'true':
-            orderby = ~orderby
-
+        # pagination algorithm
         items_per_page = settings.items_per_page
         number_of_pages = int(math.ceil(number_of_items / float(items_per_page)))
         pages = get_pages_list(current_page, number_of_pages)
-        # algoritmo de paginacion
         limitby=((current_page-1)*items_per_page,current_page*items_per_page)
 
         data = db(table.id > 0).select(limitby=limitby, orderby=orderby)
 
-        # algoritmo de busqueda
+        # search
         if request.vars.search:
             query_str = request.vars.search
             pages = []
             data = []
             for field in table.fields:
                 if table[field].type in ('string', 'text'):
-                    datos = db(table[field].like('{0}%'.format(query_str))).select(limitby=(0, 200))
-                    if datos.as_list():
-                        data = datos
+                    datas = db(table[field].like('{0}%'.format(query_str))).select(limitby=(0, 200))
+                    if datas.as_list():
+                        data = datas
 
-    if not optimizar_paginacion:
+    if not optimize_pagination:
        data = db(table.id > 0).select()
 
     csv_table = arg
 
     if csv_table:
-        ''' Importando datos de un archivo csv '''
+        ''' Importing data from a csv file '''
         formcsv = FORM(str(T('import from csv file') + " "),
                        INPUT(_type='file', _name='csvfile'),
                        INPUT(_type='hidden', _value=csv_table, _name='table'),
@@ -205,7 +191,7 @@ def list():
             finally:
                 redirect(URL('install_csv', args=arg))
         else:
-            response.error = "{0} {1}".format(is_csv, T('No es un archivo csv valido'))
+            response.error = "{0} {1}".format(is_csv, T('invalid csv file'))
 
     return locals()
 
@@ -226,7 +212,7 @@ def new():
     table, dummy = validate(request.args(0))
     refactorizar_campos(table)
 
-    form = SQLFORM(table, submit_button=T('Agregar'), _id="popup-validation", _class='form-horizontal')
+    form = SQLFORM(table, submit_button=T('add'), _id="popup-validation", _class='form-horizontal')
 
     if form.process().accepted:
         session.flash = T('%s %s successfully created.' % (singular(table), form.vars.id))
@@ -247,7 +233,7 @@ def edit():
                    record=row,
                    upload=URL('download'),
                    showid=False,
-                   submit_button=T('Guardar'),
+                   submit_button=T('save'),
                    _id="popup-validation",
                    _class='form-horizontal')
 
@@ -262,7 +248,6 @@ def edit():
                 form=form)
 
 
-@auth.requires_login()
 def download():
     return response.download(request,db)
 
@@ -271,8 +256,8 @@ def user():
     form=auth()
     if form.errors:
         if request.args(0) == 'profile':
-            response.error = T('Error al procesar el formulario')
+            response.error = T('Error while processing the form')
         else:
-            response.error = T('Correo y/o clave no es valido')
+            response.error = T('Email or password is not valid')
     return locals()
 
