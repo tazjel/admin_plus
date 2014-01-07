@@ -239,6 +239,11 @@ def refactorizar_campos(table):
                                     _type="text", _id="tiempos", _class="form-control ", \
                                      _style="margin-bottom: 15px;")
 
+            elif campo.type == 'date':
+                 campo.widget = lambda campo, valor: SQLFORM.widgets.string.widget(campo, valor,\
+                                    _type="text", _id="date", _class="date form-control ", \
+                                     _style="margin-bottom: 15px;")
+
             elif campo.type == 'time':
                  campo.widget = lambda campo, valor: SQLFORM.widgets.time.widget(campo, valor,\
                                     _type="time", _id="time", _class="form-control", \
