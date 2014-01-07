@@ -25,9 +25,9 @@
         <div class="box dark">
             <header>
                 <div class="icons">
-                    <a href="{{=URL('list', args=(request.args(0)))}}"><img alt="Show" src="{{=URL('static','plugin_admin_plus/stylesheets/theme/activo/images/icons/show.png')}}" title="{{=T('ver')}}" /></a>
+                    <a href="{{=URL('list', args=(request.args(0)))}}"><img alt="Show" src="{{=URL('static','plugin_admin_plus/img/show.png')}}" title="{{=T('ver')}}" /></a>
                     {{if auth.has_permission('update', db[request.args(0)]):}}
-                    <a href="{{=URL('edit', args=(request.args(0), row['id']))}}"><img alt="Edit" src="{{=URL('static','plugin_admin_plus/stylesheets/theme/activo/images/icons/edit.png')}}" title="{{=T('Editar')}}" /></a>
+                    <a href="{{=URL('edit', args=(request.args(0), row['id']))}}"><img alt="Edit" src="{{=URL('static','plugin_admin_plus/img/edit.png')}}" title="{{=T('Editar')}}" /></a>
                     {{pass}}
                 </div>
                 <h5>{{=singular(table)}}</h5>

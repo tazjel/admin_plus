@@ -10,7 +10,6 @@ function run(){
     $('td .upload').attr('class', 'form-control').css('margin-bottom', '15px');
     $('td div img').attr({'class': 'bgimage', 'width':'300px'}).css('margin-bottom', '15px');
 
-
 }
 
 run();

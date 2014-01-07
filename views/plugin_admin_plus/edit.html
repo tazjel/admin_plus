@@ -34,9 +34,9 @@
         <div class="box dark">
             <header>
                 <div class="icons">
-                    <a href="{{=URL('list', args=(request.args(0)))}}"><img alt="Show" src="{{=URL('static','plugin_admin_plus/stylesheets/theme/activo/images/icons/show.png')}}" title="{{=T('ver')}}" /></a>
+                    <a href="{{=URL('list', args=(request.args(0)))}}"><img alt="Show" src="{{=URL('static','plugin_admin_plus/img/show.png')}}" title="{{=T('ver')}}" /></a>
                     {{if auth.has_permission('delete', table):}}
-                    <a href="{{=URL('delete', args=(request.args(0), row['id']))}}" class="button"><img alt="Cross" src="{{=URL('static','plugin_admin_plus/stylesheets/theme/activo/images/icons/cross.png')}}" title="{{=T('eliminar')}}" /></a>
+                    <a href="{{=URL('delete', args=(request.args(0), row['id']))}}" class="button"><img alt="Cross" src="{{=URL('static','plugin_admin_plus/img/cross.png')}}" title="{{=T('eliminar')}}" /></a>
                     {{pass}}
                 </div>
                 <h5>{{=singular(table)}}</h5>
