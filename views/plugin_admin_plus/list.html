@@ -18,7 +18,7 @@
                     <i class="fa fa-expand"></i>
                 </a>
             </div>
-            <i class="fa fa-table"></i> {{=T('Registros en ')}} {{=tabla}}</h3>
+            <i class="fa fa-table"></i> {{=tabla}} {{=T('Records ')}} </h3>
     </div><!-- /.main-bar -->
 </header>
 
@@ -30,7 +30,7 @@
             <header>
                 <div class="icons">
                     {{if auth.has_permission('create', request.args(0)):}}
-                    <a data-placement="bottom" data-original-title="{{=T('Agregar')}}" href="{{=URL('new', args=request.args(0))}}" data-toggle="tooltip" class="btn btn-default btn-sm">
+                    <a data-placement="bottom" data-original-title="{{=T('Add')}}" href="{{=URL('new', args=request.args(0))}}" data-toggle="tooltip" class="btn btn-default btn-sm">
                         <i class="fa fa-plus"></i>
                     </a>
                     {{pass}}

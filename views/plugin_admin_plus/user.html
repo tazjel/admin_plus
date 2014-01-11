@@ -29,7 +29,7 @@
         <div class="page-container">
             {{=form.custom.begin}}
             <h1>Admin Plus</h1>
-            {{session.flash = T("Bienvenido a Web2py Admin plus")}}
+            {{session.flash = T("Welcome to Web2py Admin plus")}}
             <hr />
             <br />
             <center><div id="error"></div></center>
@@ -54,7 +54,7 @@
         {{=form.custom.begin}}
         <h1> <a href="{{=URL('index')}}"><img alt="Show" src="{{=URL('static','plugin_admin_plus/img/show.png')}}" title="{{=T('Tablas')}}" /></a>
             {{=T('Perfil')}}</h1>
-        {{response.flash = T("Edita tu Perfil")}}
+        {{response.flash = T("Edit Perfil")}}
         <hr />
         <br />
         {{ form.elements('#auth_user_first_name')[0] ['_placeholder'] = "name" }}
@@ -72,7 +72,7 @@
         {{ form.elements('#auth_user_email')[0] ['_class'] = "email" }}
         {{=form.custom.widget.email}}
 
-        <button type="submit">{{=T('Actualizar')}}</button>
+        <button type="submit">{{=T('Update')}}</button>
         {{=form.custom.end}}
     </form>
 </div>
@@ -84,7 +84,7 @@
         <h1>{{=T('No estas autorizado')}}</h1>
         <hr />
 
-        <button type="submit">{{=T('volver')}}</button>
+        <button type="submit">{{=T('back')}}</button>
     </form>
 </div>
 {{pass}}

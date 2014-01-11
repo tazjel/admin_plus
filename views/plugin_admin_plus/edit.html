@@ -23,7 +23,7 @@
                     <i class="fa fa-expand"></i>
                 </a>
             </div>
-            <i class="fa fa-table"></i> {{=T('Editar')}} {{=tabla}}</h3>
+            <i class="fa fa-table"></i> {{=T('Edit')}} {{=tabla}}</h3>
     </div><!-- /.main-bar -->
 </header>
 
@@ -34,9 +34,9 @@
         <div class="box dark">
             <header>
                 <div class="icons">
-                    <a href="{{=URL('list', args=(request.args(0)))}}"><img alt="Show" src="{{=URL('static','plugin_admin_plus/img/show.png')}}" title="{{=T('ver')}}" /></a>
+                    <a href="{{=URL('list', args=(request.args(0)))}}"><img alt="Show" src="{{=URL('static','plugin_admin_plus/img/show.png')}}" title="{{=T('show')}}" /></a>
                     {{if auth.has_permission('delete', table):}}
-                    <a href="{{=URL('delete', args=(request.args(0), row['id']))}}" class="button"><img alt="Cross" src="{{=URL('static','plugin_admin_plus/img/cross.png')}}" title="{{=T('eliminar')}}" /></a>
+                    <a href="{{=URL('delete', args=(request.args(0), row['id']))}}" class="button"><img alt="Cross" src="{{=URL('static','plugin_admin_plus/img/cross.png')}}" title="{{=T('Delete')}}" /></a>
                     {{pass}}
                 </div>
                 <h5>{{=singular(table)}}</h5>
